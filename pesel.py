@@ -1,3 +1,4 @@
+
 """
 Zadanie 1 - Weryfikacja numeru PESEL
 
@@ -28,13 +29,34 @@ def verify_pesel(pesel: str) -> int:
     Returns:
         int: 1 jeśli numer jest poprawny, 0 jeśli nie.
     """
-    ### TUTAJ PODAJ ROZWIĄZANIE ZADANIA
+    # Sprawdzenie czy numer ma 11 cyfr i wszystkie znaki są cyframi
+    if len(pesel) != 11 or not pesel.isdigit():
+        return 0  # Numer PESEL musi składać się z 11 cyfr
 
-    ### return 0 - powinno być zmienione i zwrócić prawdziwy wynik (zgodny z oczekiwaniami)
-    return 0
+    # Wagi cyfr numeru PESEL
+    wagi = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3]
+    suma = sum(int(pesel[i]) * wagi[i] for i in range(10))
 
+    # Obliczanie cyfry kontrolnej
+    cyfra_kontrolna = (10 - suma % 10) % 10
+
+    # Sprawdzamy, czy cyfra kontrolna zgadza się z ostatnią cyfrą PESEL
+    return 1 if cyfra_kontrolna == int(pesel[10]) else 0
 
 # Przykładowe wywołanie:
 if __name__ == "__main__":
-    pesel_input = "97082123152"
-    print(verify_pesel(pesel_input))  # Oczekiwane wyjście: 0
+    try:
+        # Pobieranie numeru PESEL od użytkownika
+        pesel_input = input("Podaj numer PESEL: ").strip()
+
+        # Sprawdzenie numeru PESEL
+        wynik = verify_pesel(pesel_input)
+
+        if wynik == 1:
+            print("Numer PESEL jest poprawny.")
+        else:
+            print("Numer PESEL jest niepoprawny.")
+    
+    except Exception as e:
+        print(f"Wystąpił błąd: {e}")
+

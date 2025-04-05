@@ -1,3 +1,4 @@
+
 """
 Zadanie 3 - Indeksowanie dokumentów
 
@@ -48,9 +49,51 @@ def index_documents(documents: list[str], queries: list[str]) -> list[list[int]]
         list[list[int]]: Lista wyników dla kolejnych zapytań.
     """
     ### TUTAJ PODAJ ROZWIĄZANIE ZADANIA
+import string
+from collections import Counter
 
-    ### return [[]] - powinno być zmienione i zwrócić prawdziwy wynik (zgodny z oczekiwaniami)
-    return [[]]
+def index_documents(documents: list[str], queries: list[str]) -> list[list[int]]:
+    """
+    Przetwarza dokumenty i zapytania, zwracając listy indeksów dokumentów,
+    w których występuje zapytanie, posortowane według częstości wystąpienia
+    danego wyrazu (malejąco), a w przypadku równych częstości - malejąco wg numeru dokumentu.
+
+    Args:
+        documents (list[str]): Lista dokumentów (każdy dokument to ciąg znaków).
+        queries (list[str]): Lista zapytań (każdy zapytanie to pojedynczy wyraz).
+
+    Returns:
+        list[list[int]]: Lista wyników dla kolejnych zapytań.
+    """
+    # Usuwanie interpunkcji i zamiana na małe litery
+    def clean_text(text: str) -> str:
+        return text.translate(str.maketrans("", "", string.punctuation)).lower()
+
+    # Indeksowanie dokumentów
+    document_word_counts = []
+    for doc in documents:
+        words = clean_text(doc).split()
+        word_count = Counter(words)  # Liczba wystąpień każdego słowa
+        document_word_counts.append(word_count)
+
+    # Wyszukiwanie zapytań
+    results = []
+    for query in queries:
+        query = query.lower()
+        doc_with_counts = []
+
+        for i, doc_counts in enumerate(document_word_counts):
+            count = doc_counts.get(query, 0)
+            if count > 0:
+                doc_with_counts.append((i, count))
+
+       
+        doc_with_counts.sort(key=lambda x: (-x[1], -x[0]))
+
+      
+        results.append([doc[0] for doc in doc_with_counts])
+
+    return results
 
 
 # Przykładowe wywołanie:
@@ -76,3 +119,4 @@ if __name__ == "__main__":
     print("Wyniki:")
     for res in results:
         print(res)
+
